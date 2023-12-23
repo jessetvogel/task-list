@@ -1,0 +1,245 @@
+:root {
+    --clr-body-background: #ECEFF1;
+    --clr-text-soft: #455A64;
+    --clr-text: #263238;
+    --clr-todo-item-background: #CFD8DC;
+    --clr-todo-item-background-today: #FFE082;
+    --clr-todo-item-background-expired: #EF9A9A;
+    --clr-dialog-background: #CFD8DC;
+    --clr-button-background: #B0BEC5;
+    --border-main: 1px solid #455A64;
+    --border-soft: 1px solid #90A4AE;
+    --font-main: 'museosans';
+}
+
+body.dark {
+    --clr-body-background: #212121;
+    --clr-text-soft: #BDBDBD;
+    --clr-text: #FAFAFA;
+    --clr-todo-item-background: #424242;
+    --clr-todo-item-background-today: #796500;
+    --clr-todo-item-background-expired: #7d0000;
+    --clr-dialog-background: #424242;
+    --clr-button-background: #616161;
+    --border-main: 1px solid #BDBDBD;
+    --border-soft: 1px solid #212121;
+}
+
+@font-face {
+    font-family: 'museosans';
+    src: url('../fonts/museosans.otf');
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 0px;
+    font-size: 16px;
+    height: 48px;
+    line-height: 48px;
+    background-color: var(--clr-button-background);
+    text-align: center;
+    text-shadow: 0px 0px 1px var(--clr-text),
+        0px 0px 1px var(--clr-text),
+        0px 0px 1px var(--clr-text),
+        0px 0px 1px var(--clr-text);
+}
+
+input {
+    outline: none;
+    border: var(--border-main);
+    border-radius: 8px;
+    height: 48px;
+    line-height: 48px;
+    padding: 0px 8px;
+    text-align: center;
+    font-size: 16px;
+    background-color: var(--clr-dialog-background);
+    color: var(--clr-text);
+    font-family: var(--font-main);
+}
+
+body {
+    background-color: var(--clr-body-background);
+    font-family: var(--font-main);
+    user-select: none;
+    color: var(--clr-text);
+}
+
+#todo-items {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0px auto;
+    margin-bottom: calc(64px + 8px);
+}
+
+#todo-items:empty::before {
+    content: 'Click 📝 to add new tasks';
+    text-align: center;
+    margin-top: 32px;
+    font-size: 24px;
+    color: var(--clr-text-soft);
+}
+
+.todo-item {
+    position: relative;
+    height: 64px;
+    background-color: var(--clr-todo-item-background);
+    border-radius: 8px;
+}
+
+.todo-item.today {
+    background-color: var(--clr-todo-item-background-today);
+}
+
+.todo-item.expired {
+    background-color: var(--clr-todo-item-background-expired);
+}
+
+.todo-item .title {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 20px;
+}
+
+.todo-item .interval {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    font-size: 16px;
+    color: var(--clr-text-soft);
+}
+
+.interval::before {
+    content: '⏰ ';
+}
+
+.todo-item .event {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    font-size: 16px;
+    color: var(--clr-text-soft);
+}
+
+.event::before {
+    content: '🗓️ ';
+}
+
+.todo-item .finish {
+    position: absolute;
+    right: 16px;
+    top: 0px;
+    font-size: 24px;
+    line-height: 64px;
+}
+
+#actions {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    background-color: var(--clr-dialog-background);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.33);
+}
+
+#actions button {
+    max-width: 96px;
+    margin-top: 8px;
+    text-align: center;
+}
+
+dialog::backdrop {
+    /* background: linear-gradient(130deg, #ff7a18, #af002d 41.07%, #319197 76.05%); */
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+dialog {
+    border: none;
+    border-radius: 16px;
+    padding: 32px;
+    width: 256px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.24);
+    background-color: var(--clr-dialog-background);
+    color: var(--clr-text);
+}
+
+dialog .title {
+    display: block;
+    font-size: 24px;
+    text-align: center;
+    width: 100%;
+}
+
+input.todo-item-title {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input.todo-item-interval {
+    border: none;
+    height: 18px;
+    width: 64px;
+}
+
+dialog .select-interval {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0px;
+}
+
+dialog .select-interval>div {
+    position: relative;
+    border-radius: 8px;
+    border: var(--border-soft);
+    padding: 8px;
+    text-align: right;
+    color: var(--clr-text-soft);
+}
+
+dialog .select-interval>div.selected {
+    color: var(--clr-text);
+    border: var(--border-main);
+}
+
+dialog .select-interval>div.selected::after {
+    position: absolute;
+    content: '⏰';
+    left: 8px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.row button {
+    flex: auto;
+    outline: none;
+}
+
+button:focus {
+    outline: none;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+dialog .interval,
+dialog .event {
+    margin: 16px 0px;
+}
