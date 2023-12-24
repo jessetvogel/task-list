@@ -1,4 +1,4 @@
-class TodoItem {
+class Task {
     constructor(title, interval, lastEvent) {
         this.title = title;
         this.interval = interval;
@@ -49,8 +49,8 @@ class TodoItem {
         }
     }
     build() {
-        let todoItem = this;
-        let classes = 'todo-item';
+        let task = this;
+        let classes = 'task';
         const nextEvent = this.nextEvent();
         let nextEventString = nextEvent.toLocaleDateString();
         const days = daysBetween(new Date(), nextEvent);
@@ -67,7 +67,7 @@ class TodoItem {
         return create('div', {
             'class': classes,
             '@click': () => {
-                openDialogStatusTodoItem(todoItem);
+                openDialogStatusTask(task);
             }
         }, [
             create('span', { 'class': 'title' }, this.title),
@@ -83,7 +83,7 @@ class TodoItem {
         };
     }
     static decode(object) {
-        return new TodoItem(object.title, object.interval, new Date(object.lastEvent));
+        return new Task(object.title, object.interval, new Date(object.lastEvent));
     }
 }
 function daysBetween(date1, date2) {
@@ -91,26 +91,26 @@ function daysBetween(date1, date2) {
     date2.setHours(0, 0, 0, 0);
     return Math.round((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
 }
-const todoItems = [];
-function saveTodoItemsToStorage() {
-    localStorage.setItem('todo-items', JSON.stringify(todoItems.map(todoItem => todoItem.encode())));
+const tasks = [];
+function saveTasksToStorage() {
+    localStorage.setItem('tasks', JSON.stringify(tasks.map(task => task.encode())));
 }
-function loadTodoItemsFromStorage() {
-    todoItems.length = 0;
+function loadTasksFromStorage() {
+    tasks.length = 0;
     try {
-        const data = JSON.parse(localStorage.getItem('todo-items'));
+        const data = JSON.parse(localStorage.getItem('tasks'));
         for (const object of data)
-            todoItems.push(TodoItem.decode(object));
+            tasks.push(Task.decode(object));
     }
     catch (error) { }
 }
-function updateTodoItems() {
-    todoItems.sort((a, b) => a.nextEvent().getTime() - b.nextEvent().getTime());
-    const div = $('todo-items');
+function updateTasks() {
+    tasks.sort((a, b) => a.nextEvent().getTime() - b.nextEvent().getTime());
+    const div = $('tasks');
     clear(div);
-    for (const todoItem of todoItems)
-        div.append(todoItem.build());
-    saveTodoItemsToStorage();
+    for (const task of tasks)
+        div.append(task.build());
+    saveTasksToStorage();
 }
 function removeDialogIfClickBackdrop(dialog, event, callback = null) {
     const rect = dialog.getBoundingClientRect();
@@ -120,25 +120,25 @@ function removeDialogIfClickBackdrop(dialog, event, callback = null) {
         callback === null || callback === void 0 ? void 0 : callback();
     }
 }
-function openDialogStatusTodoItem(todoItem) {
+function openDialogStatusTask(task) {
     const dialog = create('dialog', { '@click': (event) => removeDialogIfClickBackdrop(dialog, event) }, [
-        create('span', { 'class': 'title' }, todoItem.title),
+        create('span', { 'class': 'title' }, task.title),
         create('div', { 'class': 'row' }, [
-            create('span', { 'class': 'interval' }, todoItem.intervalText()),
-            create('span', { 'class': 'event' }, todoItem.lastEvent.toLocaleDateString())
+            create('span', { 'class': 'interval' }, task.intervalText()),
+            create('span', { 'class': 'event' }, task.lastEvent.toLocaleDateString())
         ]),
         create('div', { 'class': 'column' }, [
             create('button', {
                 '@click': () => {
-                    todoItem.lastEvent = new Date();
-                    updateTodoItems();
+                    task.lastEvent = new Date();
+                    updateTasks();
                     dialog.remove();
                 }
             }, '🏁'),
             create('button', {
                 '@click': () => {
                     dialog.remove();
-                    openDialogEditTodoItem(todoItem).then(updateTodoItems).catch();
+                    openDialogEditTask(task).then(updateTasks).catch();
                 }
             }, '✏️'),
             // create('button', {
@@ -151,12 +151,12 @@ function openDialogStatusTodoItem(todoItem) {
     document.body.append(dialog);
     dialog.showModal();
 }
-function openDialogEditTodoItem(todoItem) {
+function openDialogEditTask(task) {
     return new Promise((resolve, reject) => {
-        let title = todoItem.title;
-        let interval = todoItem.interval;
+        let title = task.title;
+        let interval = task.interval;
         function updateSelectInterval() {
-            const options = $$('dialog.edit-todo-item .select-interval > div');
+            const options = $$('dialog.edit-task .select-interval > div');
             for (const option of options)
                 removeClass(option, 'selected');
             let isSelected = false;
@@ -171,9 +171,9 @@ function openDialogEditTodoItem(todoItem) {
                 addClass(options[options.length - 1], 'selected');
             }
         }
-        const dialog = create('dialog', { 'class': 'edit-todo-item', '@click': (event) => removeDialogIfClickBackdrop(dialog, event, reject) }, [
+        const dialog = create('dialog', { 'class': 'edit-task', '@click': (event) => removeDialogIfClickBackdrop(dialog, event, reject) }, [
             create('input', {
-                'class': 'todo-item-title',
+                'class': 'task-title',
                 'type': 'text',
                 'placeholder': 'task description',
                 'value': title,
@@ -187,9 +187,9 @@ function openDialogEditTodoItem(todoItem) {
                 create('div', { '@click': () => { interval = 'week'; updateSelectInterval(); } }, 'every week'),
                 create('div', { '@click': () => { interval = 'month'; updateSelectInterval(); } }, 'every month'),
                 create('div', { '@click': () => { interval = 'year'; updateSelectInterval(); } }, 'every year'),
-                create('div', { '@click': () => { interval = parseInt($$('.todo-item-interval')[0].value); updateSelectInterval(); } }, [
+                create('div', { '@click': () => { interval = parseInt($$('.task-interval')[0].value); updateSelectInterval(); } }, [
                     create('span', {}, 'every '), create('input', {
-                        'class': 'todo-item-interval',
+                        'class': 'task-interval',
                         'type': 'number',
                         'value': interval,
                         '@change': function () { interval = parseInt(this.value); }
@@ -199,18 +199,18 @@ function openDialogEditTodoItem(todoItem) {
             create('div', { 'class': 'row' }, [
                 create('button', {
                     '@click': () => {
-                        todoItem.title = title;
-                        todoItem.interval = interval;
+                        task.title = title;
+                        task.interval = interval;
                         dialog.remove();
-                        resolve(todoItem);
+                        resolve(task);
                     }
                 }, '💾'),
                 create('button', {
                     '@click': () => {
-                        for (let i = 0; i < todoItems.length; ++i) {
-                            if (todoItems[i] == todoItem) {
-                                todoItems.splice(i, 1);
-                                updateTodoItems();
+                        for (let i = 0; i < tasks.length; ++i) {
+                            if (tasks[i] == task) {
+                                tasks.splice(i, 1);
+                                updateTasks();
                                 break;
                             }
                         }
@@ -242,12 +242,12 @@ function setTheme(theme) {
 }
 function init() {
     setTheme(null);
-    loadTodoItemsFromStorage();
-    updateTodoItems();
-    onClick($('button-add-item'), () => {
-        openDialogEditTodoItem(new TodoItem('', 7, new Date())).then(todoItem => {
-            todoItems.push(todoItem);
-            updateTodoItems();
+    loadTasksFromStorage();
+    updateTasks();
+    onClick($('button-add-task'), () => {
+        openDialogEditTask(new Task('', 7, new Date())).then(task => {
+            tasks.push(task);
+            updateTasks();
         }).catch(() => { });
     });
     onClick($('button-theme'), () => { setTheme(localStorage.getItem('theme') == 'light' ? 'dark' : 'light'); });

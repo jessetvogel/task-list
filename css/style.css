@@ -2,9 +2,9 @@
     --clr-body-background: #ECEFF1;
     --clr-text-soft: #455A64;
     --clr-text: #263238;
-    --clr-todo-item-background: #CFD8DC;
-    --clr-todo-item-background-today: #FFE082;
-    --clr-todo-item-background-expired: #EF9A9A;
+    --clr-task-background: #CFD8DC;
+    --clr-task-background-today: #FFE082;
+    --clr-task-background-expired: #EF9A9A;
     --clr-dialog-background: #CFD8DC;
     --clr-button-background: #B0BEC5;
     --border-main: 1px solid #455A64;
@@ -16,9 +16,9 @@ body.dark {
     --clr-body-background: #212121;
     --clr-text-soft: #BDBDBD;
     --clr-text: #FAFAFA;
-    --clr-todo-item-background: #424242;
-    --clr-todo-item-background-today: #796500;
-    --clr-todo-item-background-expired: #7d0000;
+    --clr-task-background: #424242;
+    --clr-task-background-today: #796500;
+    --clr-task-background-expired: #7d0000;
     --clr-dialog-background: #424242;
     --clr-button-background: #616161;
     --border-main: 1px solid #BDBDBD;
@@ -66,7 +66,7 @@ body {
     color: var(--clr-text);
 }
 
-#todo-items {
+#tasks {
     width: 100%;
     max-width: 720px;
     display: flex;
@@ -76,7 +76,7 @@ body {
     margin-bottom: calc(64px + 8px);
 }
 
-#todo-items:empty::before {
+#tasks:empty::before {
     content: 'Click 📝 to add new tasks';
     text-align: center;
     margin-top: 32px;
@@ -84,29 +84,29 @@ body {
     color: var(--clr-text-soft);
 }
 
-.todo-item {
+.task {
     position: relative;
     height: 64px;
-    background-color: var(--clr-todo-item-background);
+    background-color: var(--clr-task-background);
     border-radius: 8px;
 }
 
-.todo-item.today {
-    background-color: var(--clr-todo-item-background-today);
+.task.today {
+    background-color: var(--clr-task-background-today);
 }
 
-.todo-item.expired {
-    background-color: var(--clr-todo-item-background-expired);
+.task.expired {
+    background-color: var(--clr-task-background-expired);
 }
 
-.todo-item .title {
+.task .title {
     position: absolute;
     left: 8px;
     top: 8px;
     font-size: 20px;
 }
 
-.todo-item .interval {
+.task .interval {
     position: absolute;
     left: 8px;
     bottom: 8px;
@@ -118,7 +118,7 @@ body {
     content: '⏰ ';
 }
 
-.todo-item .event {
+.task .event {
     position: absolute;
     left: 50%;
     bottom: 8px;
@@ -130,7 +130,7 @@ body {
     content: '🗓️ ';
 }
 
-.todo-item .finish {
+.task .finish {
     position: absolute;
     right: 16px;
     top: 0px;
@@ -179,12 +179,12 @@ dialog .title {
     width: 100%;
 }
 
-input.todo-item-title {
+input.task-title {
     width: 100%;
     box-sizing: border-box;
 }
 
-input.todo-item-interval {
+input.task-interval {
     border: none;
     height: 18px;
     width: 64px;
